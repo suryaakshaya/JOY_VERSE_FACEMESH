@@ -1,0 +1,176 @@
+/* Reset default margins and ensure full-page coverage */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: Arial, Helvetica, sans-serif; /* Classic font */
+    background-color: #f4f4f4; /* Light gray background */
+    color: #333; /* Dark gray text */
+    margin: 0; /* Remove default body margin */
+    height: 100vh; /* Full viewport height */
+    overflow: hidden; /* Prevent body scroll */
+  }
+  
+  /* Main container - full width and height */
+  .admin-container {
+    width: 100vw; /* Full viewport width */
+    height: 100vh; /* Full viewport height */
+    padding: 20px;
+    background-color: #fff; /* White content background */
+    border: 1px solid #ccc; /* Classic border */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    display: flex;
+    flex-direction: column; /* Stack content vertically */
+    overflow-y: auto; /* Scroll entire container if content overflows */
+  }
+  
+  /* Header */
+  .admin-container h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #000; /* Black for emphasis */
+  }
+  
+  /* Content layout - flexible to fill space */
+  .admin-content {
+    flex: 1; /* Takes up remaining space */
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    overflow-y: auto; /* Scroll content if it overflows */
+  }
+  
+  /* Child selector section */
+  .child-selector {
+    padding: 10px;
+    border-bottom: 1px solid #ccc; /* Separator */
+  }
+  
+  .child-selector h2 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #444;
+  }
+  
+  .child-selector input {
+    padding: 8px;
+    font-size: 16px;
+    width: 200px;
+    border: 1px solid #aaa;
+    border-radius: 3px;
+    margin-right: 10px;
+  }
+  
+  .child-selector button {
+    padding: 8px 16px;
+    font-size: 16px;
+    background-color: #007bff; /* Classic blue */
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+  
+  .child-selector button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+  }
+  
+  .child-selector select {
+    padding: 8px;
+    font-size: 16px;
+    width: 200px;
+    border: 1px solid #aaa;
+    border-radius: 3px;
+    margin-top: 10px;
+  }
+  
+  /* Emotion trends and game reports sections */
+  .emotion-trends,
+  .game-reports {
+    padding: 10px;
+    flex: 1; /* Each section takes equal space */
+  }
+  
+  .emotion-trends h2,
+  .game-reports h2 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #444;
+  }
+  
+  .emotion-trends p,
+  .game-reports p {
+    font-style: italic;
+    color: #666;
+    font-size: 16px;
+  }
+  
+  /* Table styling */
+  .emotion-trends table,
+  .game-reports table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    border: 1px solid #ccc; /* Classic table border */
+  }
+  
+  .emotion-trends th,
+  .emotion-trends td,
+  .game-reports th,
+  .game-reports td {
+    padding: 10px;
+    border: 1px solid #ccc;
+    text-align: left;
+    font-size: 14px;
+  }
+  
+  .emotion-trends th,
+  .game-reports th {
+    background-color: #e0e0e0; /* Light gray header */
+    font-weight: bold;
+    color: #333;
+  }
+  
+  /* Scrollable tables within their sections */
+  .emotion-trends,
+  .game-reports {
+    overflow-y: auto; /* Scroll if content overflows */
+  }
+  
+  /* Game reports button */
+  .game-reports button {
+    padding: 8px 16px;
+    font-size: 16px;
+    background-color: #28a745; /* Classic green */
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    margin-bottom: 10px;
+  }
+  
+  .game-reports button:hover {
+    background-color: #218838; /* Darker green on hover */
+  }
+  
+  /* Back button */
+  .back-btn {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    margin: 20px auto;
+    display: block;
+    width: 150px;
+  }
+  
+  .back-btn:hover {
+    background-color: #0056b3;
+  }
