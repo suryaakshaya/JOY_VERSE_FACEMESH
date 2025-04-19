@@ -1,176 +1,328 @@
 /* Reset default margins and ensure full-page coverage */
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  
-  body {
-    font-family: Arial, Helvetica, sans-serif; /* Classic font */
-    background-color: #f4f4f4; /* Light gray background */
-    color: #333; /* Dark gray text */
-    margin: 0; /* Remove default body margin */
-    height: 100vh; /* Full viewport height */
-    overflow: hidden; /* Prevent body scroll */
-  }
-  
-  /* Main container - full width and height */
-  .admin-container {
-    width: 100vw; /* Full viewport width */
-    height: 100vh; /* Full viewport height */
-    padding: 20px;
-    background-color: #fff; /* White content background */
-    border: 1px solid #ccc; /* Classic border */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-    display: flex;
-    flex-direction: column; /* Stack content vertically */
-    overflow-y: auto; /* Scroll entire container if content overflows */
-  }
-  
-  /* Header */
-  .admin-container h1 {
-    text-align: center;
-    margin-bottom: 20px;
-    font-size: 24px;
-    color: #000; /* Black for emphasis */
-  }
-  
-  /* Content layout - flexible to fill space */
-  .admin-content {
-    flex: 1; /* Takes up remaining space */
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    overflow-y: auto; /* Scroll content if it overflows */
-  }
-  
-  /* Child selector section */
-  .child-selector {
-    padding: 10px;
-    border-bottom: 1px solid #ccc; /* Separator */
-  }
-  
-  .child-selector h2 {
-    font-size: 18px;
-    margin-bottom: 10px;
-    color: #444;
-  }
-  
-  .child-selector input {
-    padding: 8px;
-    font-size: 16px;
-    width: 200px;
-    border: 1px solid #aaa;
-    border-radius: 3px;
-    margin-right: 10px;
-  }
-  
-  .child-selector button {
-    padding: 8px 16px;
-    font-size: 16px;
-    background-color: #007bff; /* Classic blue */
-    color: white;
-    border: none;
-    border-radius: 3px;
-    cursor: pointer;
-  }
-  
-  .child-selector button:hover {
-    background-color: #0056b3; /* Darker blue on hover */
-  }
-  
-  .child-selector select {
-    padding: 8px;
-    font-size: 16px;
-    width: 200px;
-    border: 1px solid #aaa;
-    border-radius: 3px;
-    margin-top: 10px;
-  }
-  
-  /* Emotion trends and game reports sections */
-  .emotion-trends,
-  .game-reports {
-    padding: 10px;
-    flex: 1; /* Each section takes equal space */
-  }
-  
-  .emotion-trends h2,
-  .game-reports h2 {
-    font-size: 18px;
-    margin-bottom: 10px;
-    color: #444;
-  }
-  
-  .emotion-trends p,
-  .game-reports p {
-    font-style: italic;
-    color: #666;
-    font-size: 16px;
-  }
-  
-  /* Table styling */
-  .emotion-trends table,
-  .game-reports table {
-    width: 100%;
-    border-collapse: collapse;
-    background-color: #fff;
-    border: 1px solid #ccc; /* Classic table border */
-  }
-  
-  .emotion-trends th,
-  .emotion-trends td,
-  .game-reports th,
-  .game-reports td {
-    padding: 10px;
-    border: 1px solid #ccc;
-    text-align: left;
-    font-size: 14px;
-  }
-  
-  .emotion-trends th,
-  .game-reports th {
-    background-color: #e0e0e0; /* Light gray header */
-    font-weight: bold;
-    color: #333;
-  }
-  
-  /* Scrollable tables within their sections */
-  .emotion-trends,
-  .game-reports {
-    overflow-y: auto; /* Scroll if content overflows */
-  }
-  
-  /* Game reports button */
-  .game-reports button {
-    padding: 8px 16px;
-    font-size: 16px;
-    background-color: #28a745; /* Classic green */
-    color: white;
-    border: none;
-    border-radius: 3px;
-    cursor: pointer;
-    margin-bottom: 10px;
-  }
-  
-  .game-reports button:hover {
-    background-color: #218838; /* Darker green on hover */
-  }
-  
-  /* Back button */
-  .back-btn {
-    padding: 10px 20px;
-    font-size: 16px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 3px;
-    cursor: pointer;
-    margin: 20px auto;
-    display: block;
-    width: 150px;
-  }
-  
-  .back-btn:hover {
-    background-color: #0056b3;
-  }
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: #f4f4f4;
+  color: #333;
+  overflow-x: hidden;
+}
+
+/* Main container - full width */
+.admin-container {
+  width: 100%;
+  min-height: 100vh;
+  padding: 20px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  display: block; /* Changed from flex to block to stop screen splitting */
+}
+
+/* Header */
+.admin-container h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 28px;
+  color: #000;
+}
+
+/* Message styling */
+.message {
+  text-align: center;
+  margin: 10px 0;
+  font-size: 18px;
+  color: #dc3545;
+}
+
+/* Content layout - stack vertically */
+.admin-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Scrollable sections - limit height and enable scrolling */
+.emotion-trends,
+.game-reports {
+  padding: 10px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+/* --- The rest is your original CSS, unchanged --- */
+
+/* Child registration section */
+.child-registration {
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+}
+
+.child-registration h2 {
+  font-size: 20px;
+  margin-bottom: 10px;
+  color: #444;
+}
+
+.child-registration form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.child-registration input {
+  padding: 10px;
+  font-size: 18px;
+  border: 1px solid #aaa;
+  border-radius: 3px;
+}
+
+.child-registration button {
+  padding: 10px 16px;
+  font-size: 18px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.child-registration button:hover {
+  background-color: #0056b3;
+}
+
+/* Child selector section */
+.child-selector {
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+}
+
+.child-selector h2 {
+  font-size: 20px;
+  margin-bottom: 10px;
+  color: #444;
+}
+
+.child-selector input {
+  padding: 10px;
+  font-size: 18px;
+  width: 200px;
+  border: 1px solid #aaa;
+  border-radius: 3px;
+  margin-right: 10px;
+}
+
+.child-selector button {
+  padding: 10px 16px;
+  font-size: 18px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.child-selector button:hover {
+  background-color: #0056b3;
+}
+
+.child-selector select {
+  padding: 10px;
+  font-size: 18px;
+  width: 200px;
+  border: 1px solid #aaa;
+  border-radius: 3px;
+  margin-top: 10px;
+}
+
+/* Edit child section */
+.edit-child {
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+}
+
+.edit-child h2 {
+  font-size: 20px;
+  margin-bottom: 10px;
+  color: #444;
+}
+
+.edit-child input {
+  padding: 10px;
+  font-size: 18px;
+  border: 1px solid #aaa;
+  border-radius: 3px;
+  margin-bottom: 10px;
+}
+
+.edit-child button {
+  padding: 10px 16px;
+  font-size: 18px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.edit-child button:hover {
+  background-color: #0056b3;
+}
+
+/* Child list section */
+.child-list {
+  padding: 10px;
+}
+
+.child-list h2 {
+  font-size: 20px;
+  margin-bottom: 10px;
+  color: #444;
+}
+
+.child-list p {
+  font-style: italic;
+  color: #666;
+  font-size: 18px;
+}
+
+.child-list table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+  border: 2px solid #007bff;
+}
+
+.child-list th,
+.child-list td {
+  padding: 12px;
+  border: 1px solid #ccc;
+  text-align: left;
+  font-size: 16px;
+}
+
+.child-list th {
+  background-color: #007bff;
+  font-weight: bold;
+  color: white;
+}
+
+.child-list button {
+  padding: 8px 12px;
+  font-size: 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  margin-right: 5px;
+}
+
+.child-list button:hover {
+  background-color: #0056b3;
+}
+
+.child-list button:nth-child(2) {
+  background-color: #dc3545;
+}
+
+.child-list button:nth-child(2):hover {
+  background-color: #c82333;
+}
+
+.child-list button:nth-child(3) {
+  background-color: #28a745;
+}
+
+.child-list button:nth-child(3):hover {
+  background-color: #218838;
+}
+
+.child-list button:nth-child(4) {
+  background-color: #ffc107;
+  color: #333;
+}
+
+.child-list button:nth-child(4):hover {
+  background-color: #e0a800;
+}
+
+/* Emotion trends and game reports headings and tables */
+.emotion-trends h2,
+.game-reports h2 {
+  font-size: 20px;
+  margin-bottom: 10px;
+  color: #444;
+}
+
+.emotion-trends p,
+.game-reports p {
+  font-style: italic;
+  color: #666;
+  font-size: 18px;
+}
+
+.emotion-trends table,
+.game-reports table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #f0f0f0;
+  border: 2px solid #007bff;
+}
+
+.emotion-trends th,
+.emotion-trends td,
+.game-reports th,
+.game-reports td {
+  padding: 12px;
+  border: 1px solid #ccc;
+  text-align: left;
+  font-size: 16px;
+}
+
+.emotion-trends th,
+.game-reports th {
+  background-color: #007bff;
+  font-weight: bold;
+  color: white;
+}
+
+.game-reports button {
+  padding: 10px 16px;
+  font-size: 18px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.game-reports button:hover {
+  background-color: #218838;
+}
+
+/* Back button */
+.back-btn {
+  padding: 10px 20px;
+  font-size: 18px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  margin: 20px auto;
+  display: block;
+  width: 150px;
+}
+
+.back-btn:hover {
+  background-color: #0056b3;
+}

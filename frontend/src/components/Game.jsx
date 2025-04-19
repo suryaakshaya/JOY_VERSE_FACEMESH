@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import './../styles/game.css';
+import axios from 'axios';
+import '../styles/game.css';
 import videoFile from '../assets/video.mp4';
 import dogImage from '../assets/dog.png';
 import catImage from '../assets/cat.png';
@@ -26,9 +27,8 @@ const Game = () => {
   const canvasRef = useRef(null);
   const emotionDisplayRef = useRef(null);
 
-  // Emotion to background color mapping (dyslexia-friendly)
   const emotionColors = {
-    happy: 'rgba(255, 215, 0, 0.5)',    // Gold, semi-transparent
+    happy: 'rgba(255, 215, 0, 0.5)',    // Gold
     sad: 'rgba(135, 206, 235, 0.5)',   // Sky Blue
     angry: 'rgba(255, 69, 0, 0.5)',     // Orange Red
     surprise: 'rgba(152, 251, 152, 0.5)', // Pale Green
@@ -37,10 +37,8 @@ const Game = () => {
     neutral: 'rgba(245, 245, 245, 0.5)', // Whitesmoke
   };
 
-  // Handle emotions collected (called when 4 emotions are gathered)
   const handleEmotionsCollected = (emotions) => {
     setQuestionEmotions(emotions);
-    // Determine the most frequent emotion
     const emotionCounts = emotions.reduce((acc, emotion) => {
       acc[emotion] = (acc[emotion] || 0) + 1;
       return acc;
@@ -49,6 +47,19 @@ const Game = () => {
       emotionCounts[a] > emotionCounts[b] ? a : b
     );
     setCurrentEmotion(dominantEmotion.toLowerCase());
+
+    const userId = localStorage.getItem('userId');
+    if (!userId || !currentWord) return;
+
+    axios.post('http://localhost:3000/child/save-emotion', {
+      userId,
+      emotion: dominantEmotion.toLowerCase(),
+      question: currentWord.correct,
+    }, {
+      headers: { Authorization: `Bearer ${localStorage.getItem('child_token')}` },
+    })
+      .then(res => console.log('Emotion saved:', res.data))
+      .catch(error => console.error('Error saving emotion:', error));
   };
 
   useEmotionDetection(videoRef, canvasRef, emotionDisplayRef, gameStarted, handleEmotionsCollected);
@@ -72,7 +83,7 @@ const Game = () => {
       setCurrentWord(word);
       setLetters(word.jumbled.split(''));
       setDropZones(Array(word.correct.length).fill(null));
-      setQuestionEmotions([]); // Reset emotions for new question
+      setQuestionEmotions([]);
     }
   }, [wordIndex, shuffledWords]);
 
@@ -91,33 +102,31 @@ const Game = () => {
     newDropZones[index] = letter;
     setDropZones(newDropZones);
 
-    if (newDropZones.every((zone) => zone !== null)) {
+    if (newDropZones.every(zone => zone !== null)) {
       const arrangedWord = newDropZones.join('');
-      if (arrangedWord === currentWord.correct) {
+      const isCorrect = arrangedWord === currentWord.correct;
+      const newScore = isCorrect ? score + 1 : score;
+
+      axios.post('http://localhost:3000/child/save-game', {
+        userId: localStorage.getItem('userId'),
+        score: newScore,
+        emotions: questionEmotions,
+        question: currentWord.correct,
+        isCorrect,
+      }, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('child_token')}` },
+      })
+        .then(res => console.log('Game progress saved:', res.data))
+        .catch(error => console.error('Error saving game progress:', error));
+
+      if (isCorrect) {
         setFeedback('Correct!');
-        const newScore = score + 1;
         setScore(newScore);
-
-        // Save game progress with emotions
-        fetch('http://localhost:3000/save-game', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            userId: localStorage.getItem('userId'),
-            score: newScore,
-            emotions: questionEmotions,
-            completedAt: new Date().toISOString(),
-          }),
-        })
-          .then((res) => res.json())
-          .then((data) => console.log('Game progress saved:', data))
-          .catch((error) => console.error('Error saving game progress:', error));
-
         if (newScore >= words.length) {
           setGameCompleted(true);
         } else {
           setTimeout(() => {
-            setWordIndex((prevIndex) => prevIndex + 1);
+            setWordIndex(prev => prev + 1);
             setFeedback(null);
             setDropZones(Array(currentWord.correct.length).fill(null));
           }, 1000);
@@ -134,13 +143,11 @@ const Game = () => {
 
   return (
     <div className="game-container">
-      {/* Background Video */}
       <video autoPlay loop muted playsInline className="background-video">
-        <source src={videoFile} type="video.mp4" />
+        <source src={videoFile} type="video/mp4" />
         Your browser does not support the video tag.
       </video>
 
-      {/* Emotion Overlay */}
       {currentEmotion && (
         <div
           style={{
@@ -156,7 +163,6 @@ const Game = () => {
         />
       )}
 
-      {/* Hidden Webcam Feed */}
       <video
         ref={videoRef}
         style={{ display: 'none' }}
@@ -167,7 +173,6 @@ const Game = () => {
         height="480"
       />
 
-      {/* Face Detection Canvas */}
       <canvas
         ref={canvasRef}
         style={{ position: 'absolute', top: 0, left: 0, zIndex: 1 }}
@@ -175,13 +180,11 @@ const Game = () => {
         height="480"
       />
 
-      {/* Emotion Display */}
       <div
         ref={emotionDisplayRef}
-        style={{ position: 'absolute', top: '10px', left: '10px', color: 'white@clickhouse.com', zIndex: 2 }}
+        style={{ position: 'absolute', top: '10px', left: '10px', color: 'white', zIndex: 2 }}
       />
 
-      {/* Game Content */}
       <div className="content">
         {!gameStarted ? (
           <>
@@ -202,7 +205,7 @@ const Game = () => {
                 <div
                   key={index}
                   draggable
-                  onDragStart={(e) => handleDragStart(e, letter)}
+                  onDragStart={e => handleDragStart(e, letter)}
                   className="draggable-letter"
                 >
                   {letter}
@@ -215,7 +218,7 @@ const Game = () => {
                 <div
                   key={index}
                   onDragOver={handleDragOver}
-                  onDrop={(e) => handleDrop(e, index)}
+                  onDrop={e => handleDrop(e, index)}
                   className={`dropzone ${zone ? 'filled' : ''}`}
                 >
                   {zone || '_'}

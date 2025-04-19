@@ -1,10 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
-import './../styles/childstyles.css';
-import characterImg from './../assets/trail2.png';
 import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import characterImg from '../assets/trail2.png';
+import '../styles/childstyles.css';
 
 const ChildLogin = () => {
-  const [username, setUsername] = useState('');
+  const [childName, setChildName] = useState('');
   const [digits, setDigits] = useState(Array(6).fill(''));
   const [errorMessage, setErrorMessage] = useState('');
   const [loading, setLoading] = useState(false);
@@ -26,30 +27,28 @@ const ChildLogin = () => {
     if (e.key === 'Enter') validateLogin();
   };
 
-  const validateLogin = () => {
+  const validateLogin = async () => {
     const userId = digits.join('');
-    if (!username || userId.length !== 6) {
-      setErrorMessage('Please enter your username and 6-digit code.');
+    if (!childName || userId.length !== 6) {
+      setErrorMessage('Please enter your name and 6-digit code.');
       return;
     }
 
     setLoading(true);
-    fetch('http://localhost:3000/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: username, userId, password: userId }),
-    })
-      .then(res => res.json())
-      .then(data => {
-        if (data.token) {
-          localStorage.setItem('token', data.token);
-          navigate('/game');
-        } else {
-          setErrorMessage(data.message || 'Invalid credentials!');
-        }
-      })
-      .catch(() => setErrorMessage('Failed to connect. Try again!'))
-      .finally(() => setLoading(false));
+    try {
+      const response = await axios.post('http://localhost:3000/child/login', {
+        childName,
+        userId,
+        password: userId,
+      });
+      localStorage.setItem('child_token', response.data.token);
+      localStorage.setItem('userId', response.data.userId);
+      navigate('/game');
+    } catch (error) {
+      setErrorMessage(error.response?.data?.message || 'Invalid credentials!');
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -64,10 +63,10 @@ const ChildLogin = () => {
           <h2>LOGIN</h2>
           <input
             type="text"
-            placeholder="Username"
+            placeholder="Your Name"
             className="input-box"
-            value={username}
-            onChange={e => setUsername(e.target.value)}
+            value={childName}
+            onChange={e => setChildName(e.target.value)}
           />
           <div className="digit-boxes">
             {digits.map((digit, index) => (
@@ -92,7 +91,8 @@ const ChildLogin = () => {
             <a href="#">Forgot your password?</a>
           </div>
         </div>
-        <Link to="/admin" className="admin-btn">Admin</Link>
+        <Link to="/admin-login" className="admin-btn">Admin Login</Link>
+        <Link to="/superadmin-login" className="superadmin-btn">SuperAdmin Login</Link>
       </div>
     </div>
   );
