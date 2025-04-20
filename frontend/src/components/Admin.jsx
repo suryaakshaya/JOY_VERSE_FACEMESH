@@ -5,6 +5,7 @@ import io from 'socket.io-client';
 import '../styles/admin.css';
 
 const Admin = () => {
+  const [activeSection, setActiveSection] = useState('listOfChildren');
   const [children, setChildren] = useState([]);
   const [selectedChild, setSelectedChild] = useState(null);
   const [emotionTrends, setEmotionTrends] = useState([]);
@@ -101,6 +102,9 @@ const Admin = () => {
     }
     await fetchGameReport(userId);
     setIsFetchingReports(false);
+    if (activeSection === 'seeReports') {
+      setActiveSection('seeReports');
+    }
   };
 
   const fetchGameReport = async (userId) => {
@@ -157,6 +161,7 @@ const Admin = () => {
 
   const handleEditChild = (child) => {
     setEditChild({ ...child });
+    setActiveSection('update');
   };
 
   const handleUpdateChild = async () => {
@@ -172,6 +177,7 @@ const Admin = () => {
       setMessage(res.data.message);
       setEditChild(null);
       fetchChildren(token);
+      setActiveSection('listOfChildren');
     } catch (error) {
       console.error('Error updating child:', error.response?.data || error.message);
       setMessage(error.response?.data?.message || 'Update failed');
@@ -223,194 +229,240 @@ const Admin = () => {
     return <div>Loading...</div>;
   }
 
+  console.log('Rendering with activeSection:', activeSection, 'selectedChild:', selectedChild, 'editChild:', editChild);
+
   return (
     <div className="admin-container">
+      <nav className="admin-nav">
+        <button onClick={() => setActiveSection('register')}>Register</button>
+        <button onClick={() => setActiveSection('listOfChildren')}>List of Children</button>
+        <button onClick={() => setActiveSection('update')}>Update</button>
+        <button onClick={() => setActiveSection('delete')}>Delete</button>
+        <button onClick={() => setActiveSection('seeReports')}>See Reports</button>
+      </nav>
       <h1>Admin Panel</h1>
       {message && <p className="message">{message}</p>}
 
       <div className="admin-content">
-        <div className="child-registration">
-          <h2>Register New Child</h2>
-          <form onSubmit={handleRegisterChild}>
-            <input
-              type="text"
-              placeholder="Child Name"
-              value={registerChild.childName}
-              onChange={e => setRegisterChild({ ...registerChild, childName: e.target.value })}
-              required
-            />
-            <input
-              type="text"
-              placeholder="Phone Number"
-              value={registerChild.phone}
-              onChange={e => setRegisterChild({ ...registerChild, phone: e.target.value })}
-              required
-            />
-            <input
-              type="text"
-              placeholder="6-Digit User ID"
-              value={registerChild.userId}
-              onChange={e => setRegisterChild({ ...registerChild, userId: e.target.value })}
-              required
-            />
-            <button type="submit">Register Child</button>
-          </form>
-        </div>
+        {activeSection === 'register' && (
+          <div className="child-registration">
+            <h2>Register New Child</h2>
+            <form onSubmit={handleRegisterChild}>
+              <input
+                type="text"
+                placeholder="Child Name"
+                value={registerChild.childName}
+                onChange={e => setRegisterChild({ ...registerChild, childName: e.target.value })}
+                required
+              />
+              <input
+                type="text"
+                placeholder="Phone Number"
+                value={registerChild.phone}
+                onChange={e => setRegisterChild({ ...registerChild, phone: e.target.value })}
+                required
+              />
+              <input
+                type="text"
+                placeholder="6-Digit User ID"
+                value={registerChild.userId}
+                onChange={e => setRegisterChild({ ...registerChild, userId: e.target.value })}
+                required
+              />
+              <button type="submit">Register Child</button>
+            </form>
+          </div>
+        )}
 
-        <div className="child-selector">
-          <h2>Search Child</h2>
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={e => setSearchQuery(e.target.value)}
-            placeholder="Enter child name"
-          />
-          <button onClick={handleSearch}>Search</button>
-          <select value={selectedChild || ''} onChange={e => handleChildSelect(e.target.value)}>
-            <option value="">Select a child</option>
-            {children.map(child => (
-              <option key={child.userId} value={child.userId}>
-                {child.childName} ({child.userId})
-              </option>
-            ))}
-          </select>
-        </div>
+        {activeSection === 'listOfChildren' && (
+          <div className="child-list">
+            <h2>Registered Children</h2>
+            {children.length > 0 ? (
+              <table>
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Phone</th>
+                    <th>User ID</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {children.map(child => (
+                    <tr key={child._id}>
+                      <td>{child.childName}</td>
+                      <td>{child.phone}</td>
+                      <td>{child.userId}</td>
+                      <td>{child.isActive ? 'Active' : 'Inactive'}</td>
+                      <td>
+                        <button onClick={() => handleEditChild(child)}>Edit</button>
+                        <button onClick={() => handleDeleteChild(child._id)}>Delete</button>
+                        <button onClick={() => handleResetPassword(child._id)}>Reset Password</button>
+                        <button onClick={() => handleToggleStatus(child._id, child.isActive)}>
+                          {child.isActive ? 'Deactivate' : 'Activate'}
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <p>No children registered yet.</p>
+            )}
+          </div>
+        )}
 
-        {editChild && (
+        {activeSection === 'update' && editChild && (
           <div className="edit-child">
             <h2>Edit Child</h2>
             <input
               type="text"
-              value={editChild.childName}
+              value={editChild.childName || ''}
               onChange={e => setEditChild({ ...editChild, childName: e.target.value })}
               placeholder="Child Name"
             />
             <input
               type="text"
-              value={editChild.phone}
+              value={editChild.phone || ''}
               onChange={e => setEditChild({ ...editChild, phone: e.target.value })}
               placeholder="Phone"
             />
             <input
               type="text"
-              value={editChild.userId}
+              value={editChild.userId || ''}
               onChange={e => setEditChild({ ...editChild, userId: e.target.value })}
               placeholder="User ID"
             />
             <button onClick={handleUpdateChild}>Update</button>
-            <button onClick={() => setEditChild(null)}>Cancel</button>
+            <button onClick={() => { setEditChild(null); setActiveSection('listOfChildren'); }}>Cancel</button>
+            {!editChild && <p>Please select a child to edit from the List of Children.</p>}
           </div>
         )}
 
-        <div className="child-list">
-          <h2>Registered Children</h2>
-          {children.length > 0 ? (
-            <table>
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Phone</th>
-                  <th>User ID</th>
-                  <th>Status</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {children.map(child => (
-                  <tr key={child._id}>
-                    <td>{child.childName}</td>
-                    <td>{child.phone}</td>
-                    <td>{child.userId}</td>
-                    <td>{child.isActive ? 'Active' : 'Inactive'}</td>
-                    <td>
-                      <button onClick={() => handleEditChild(child)}>Edit</button>
-                      <button onClick={() => handleDeleteChild(child._id)}>Delete</button>
-                      <button onClick={() => handleResetPassword(child._id)}>Reset Password</button>
-                      <button onClick={() => handleToggleStatus(child._id, child.isActive)}>
-                        {child.isActive ? 'Deactivate' : 'Activate'}
-                      </button>
-                    </td>
+        {activeSection === 'delete' && (
+          <div className="child-list">
+            <h2>Delete Children</h2>
+            {children.length > 0 ? (
+              <table>
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Phone</th>
+                    <th>User ID</th>
+                    <th>Status</th>
+                    <th>Actions</th>
                   </tr>
+                </thead>
+                <tbody>
+                  {children.map(child => (
+                    <tr key={child._id}>
+                      <td>{child.childName}</td>
+                      <td>{child.phone}</td>
+                      <td>{child.userId}</td>
+                      <td>{child.isActive ? 'Active' : 'Inactive'}</td>
+                      <td>
+                        <button onClick={() => handleDeleteChild(child._id)}>Delete</button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <p>No children to delete.</p>
+            )}
+          </div>
+        )}
+
+        {activeSection === 'seeReports' && (
+          <div className="reports-section">
+            <div className="child-selector">
+              <h2>Select Child for Reports</h2>
+              <select value={selectedChild || ''} onChange={e => handleChildSelect(e.target.value)}>
+                <option value="">Select a child</option>
+                {children.map(child => (
+                  <option key={child.userId} value={child.userId}>
+                    {child.childName} ({child.userId})
+                  </option>
                 ))}
-              </tbody>
-            </table>
-          ) : (
-            <p>No children registered yet.</p>
-          )}
-        </div>
-
-        {selectedChild && (
-          <>
-            <div className="emotion-trends">
-              <h2>Emotion Trends</h2>
-              {isFetchingReports ? (
-                <p>Loading emotion trends...</p>
-              ) : emotionTrends.length > 0 ? (
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Date/Time</th>
-                      <th>Emotion</th>
-                      <th>Question</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {console.log('Rendering emotionTrends:', emotionTrends)}
-                    {emotionTrends.map((trend) => (
-                      <tr key={trend._id}>
-                        <td>{new Date(trend.timestamp).toLocaleString()}</td>
-                        <td>{trend.emotion}</td>
-                        <td>{trend.question}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              ) : (
-                <p>No emotion data available for this child.</p>
-              )}
+              </select>
             </div>
-
-            <div className="game-reports">
-              <h2>Game Reports</h2>
-              <button onClick={() => fetchGameReport(selectedChild)}>Refresh Reports</button>
-              {isFetchingReports ? (
-                <p>Loading game reports...</p>
-              ) : gameReports.length > 0 ? (
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Completed At</th>
-                      <th>Score</th>
-                      <th>Question</th>
-                      <th>Correct</th>
-                      <th>Emotions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {console.log('Rendering gameReports:', gameReports)}
-                    {gameReports.map((report) => (
-                      <tr key={report._id}>
-                        <td>{new Date(report.completedAt).toLocaleString()}</td>
-                        <td>{report.score}</td>
-                        <td>{report.question}</td>
-                        <td>{report.isCorrect ? 'Yes' : 'No'}</td>
-                        <td>{report.emotions.join(', ')}</td>
+            <div className="reports-grid">
+              <div className="emotion-trends">
+                <h2>Emotion Trends</h2>
+                {isFetchingReports ? (
+                  <p>Loading emotion trends...</p>
+                ) : emotionTrends.length > 0 ? (
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Date/Time</th>
+                        <th>Emotion</th>
+                        <th>Question</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              ) : (
-                <p>No game reports available for this child.</p>
-              )}
+                    </thead>
+                    <tbody>
+                      {emotionTrends.map((trend, index) => (
+                        <tr key={index}>
+                          <td>{new Date(trend.timestamp).toLocaleString()}</td>
+                          <td>{trend.emotion}</td>
+                          <td>{trend.question}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                ) : (
+                  <p>No emotion data available for this child.</p>
+                )}
+              </div>
+              <div className="game-reports">
+                <h2>Game Reports</h2>
+                <button onClick={() => fetchGameReport(selectedChild)}>Refresh Reports</button>
+                {isFetchingReports ? (
+                  <p>Loading game reports...</p>
+                ) : gameReports.length > 0 ? (
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Completed At</th>
+                        <th>Score</th>
+                        <th>Question</th>
+                        <th>Correct</th>
+                        <th>Emotions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {gameReports.map((report, index) => (
+                        <tr key={index}>
+                          <td>{new Date(report.completedAt).toLocaleString()}</td>
+                          <td>{report.score}</td>
+                          <td>{report.question}</td>
+                          <td>{report.isCorrect ? 'Yes' : 'No'}</td>
+                          <td>{report.emotions.join(', ')}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                ) : (
+                  <p>No game reports available for this child.</p>
+                )}
+              </div>
             </div>
-          </>
+          </div>
         )}
       </div>
-      <button onClick={() => {
-        localStorage.removeItem('admin_token');
-        localStorage.removeItem('admin_id');
-        navigate('/admin-login');
-      }} className="back-btn">Logout</button>
+      <div className="footer">
+        <button
+          onClick={() => {
+            localStorage.removeItem('admin_token');
+            localStorage.removeItem('admin_id');
+            navigate('/admin-login');
+          }}
+          className="back-btn"
+        >
+          Logout
+        </button>
+      </div>
     </div>
   );
 };
