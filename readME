@@ -129,3 +129,53 @@ extended email notification -> smtp.gamil.com 465->cred (gmail, passkey generate
 
 
 
+tomcat:
+pipeline {
+    agent any
+
+    environment {
+        TOMCAT_HOME = "C:/Program Files/Apache Software Foundation/Tomcat 9.0"
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                // Clone your GitHub repo
+                git branch: 'master', url: 'https://github.com/suryaakshaya/mavenweb.git'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                // Run Maven build
+                bat 'mvn clean package'
+            }
+        }
+
+        stage('Deploy to Tomcat') {
+            steps {
+                // Copy WAR file to Tomcat webapps folder
+                bat "copy target\\mavenweb.war \"${TOMCAT_HOME}\\webapps\\\""
+            }
+        }
+
+        stage('Start Tomcat') {
+            steps {
+                // Start Tomcat server
+                bat "\"${TOMCAT_HOME}\\bin\\startup.bat\""
+            }
+        }
+
+        stage('Verify Deployment') {
+            steps {
+                echo 'Application deployed! Open http://localhost:8080/mavenweb'
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Pipeline finished!'
+        }
+    }
+}
