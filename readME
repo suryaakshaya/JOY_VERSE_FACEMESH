@@ -25,16 +25,40 @@ docker run --name nagiosdemo -p 8888:80 -d jasonrivers/nagios:latest
 username:nagiosadmin
 password:nagios
 
+or try:
+docker pull jasonrivers/nagios:latest
+docker run --name nagiosdemo -p 8888:80 jasonrivers/nagios:latest
 
 
 
 aws commands:
 AWS:
+create instance->select connect -> ssh client ->go to  folder where.pem file is there -> copy path->open cmd in ad mode->navigatr to that folder->copy the ssh ->copy and paste the ssh command
+
 sudo apt update
 sudo apt-get install docker.io
  sudo apt-get install git
 sudo apt-get install nano
-git clone <repo>
+create a small example index.html:
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>First HEading</h1>
+</body>
+</html>
+open git bash 
+git init
+gid add .
+git commit -m ""
+create empty repo
+paste those commands
+git clone <https>
+ls
 cd <repo>
 ls
 nano Dockerfile (write this)=>
@@ -46,7 +70,9 @@ sudo docker run -d -p 80:80
 
 go to instances and open ipv4 web
 
-
+stp: sudo docker ps (copy id)
+sudo docker stop id
+terminate and delete instance
 
 
 
