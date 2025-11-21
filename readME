@@ -1,0 +1,53 @@
+minikuibe commands:
+minikube start --driver=docker (if error -> minikube delete , start again)
+kubectl create deployment mynginx --image=nginx
+kubectl expose deployment mynginx --type=NodePort --port=80
+minikube service mynginx (or) kubectl port-forward service/mynginx 8085:80
+kubectl delete service service_name
+kubectl get service ->get list of services
+
+for specific port:
+kubectl expose deployment mynginx --type=NodePort --port=8090 --target-port=80
+
+kubectl get pods
+kubectl get deployment
+kubectl describe pod
+kubectl describe pod pod_name
+
+
+
+
+nagios command:
+nagios docker image:=>
+docker pull jasonrivers/nagios:latest
+docker run --name nagiosdemo -p 8888:80 -d jasonrivers/nagios:latest
+
+username:nagiosadmin
+password:nagios
+
+
+
+
+aws commands:
+AWS:
+sudo apt update
+sudo apt-get install docker.io
+ sudo apt-get install git
+sudo apt-get install nano
+git clone <repo>
+cd <repo>
+ls
+nano Dockerfile (write this)=>
+FROM nginx:alpine
+COPY . /usr/share/nginx/html
+
+sudo docker build -t myserver .
+sudo docker run -d -p 80:80
+
+go to instances and open ipv4 web
+
+
+
+
+
+
