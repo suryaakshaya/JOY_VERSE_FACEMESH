@@ -50,4 +50,82 @@ go to instances and open ipv4 web
 
 
 
+pipeline:
+pipeline ani annadu ani manam pipeline tho cheyalsina avasaram edhanta if use scripts ani mention chesthe pipeline {
+    agent any
+
+    tools {
+        maven 'Maven'
+        jdk 'JDK21'
+    }
+
+    stages {
+
+        stage('Clone Repository') {
+            steps {
+                git branch: 'main', url: 'https://github.com/yourname/WebAppProject.git'
+            }
+        }
+
+        stage('Maven Build') {
+            steps {
+                bat "mvn clean package"
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                bat "mvn test"
+            }
+        }
+
+        stage('List WAR File') {
+            steps {
+                bat "dir target\\*.war"
+            }
+        }
+
+        stage('Deploy to Tomcat') {
+            steps {
+                echo "Deploying WAR to Tomcat..."
+                // example: copy file to tomcat webapps
+                bat 'copy target\\yourapp.war C:\\tomcat\\webapps\\'
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "Deployment completed successfully!"
+        }
+    }
+}
+
+ilanti script tho cheyyali
+
+
+
+checkout ([$class:'GITSCM',branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/suryaakshaya/mavenweb.git']]])
+
+
+webhook:
+create pipeline -> sample html->build->configure->pipeline->pipeline syntax->version control->git url->geberate pipeline script->save->webhook->payload url (ngrok http 8080/github-webhook)->test->commit
+checkout scmGit(branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/suryaakshaya/mavenweb.git']])
+checkout([
+    $class: 'GitSCM',
+    branches: [[name: '*/master']],
+    extensions: [],
+    userRemoteConfigs: [[url: 'https://github.com/suryaakshaya/mavenweb.git']]
+])
+
+
+
+
+
+email-trigger:
+jenkins->configure system->last lo smtp ->stmp.gmail.com(@gmail.com)->advanced:smtp (username:gmail,pass:key generated)->tls->smtpport(587)and enter reciepent email->test
+extended email notification -> smtp.gamil.com 465->cred (gmail, passkey generated)->ssl
+
+
+
 
