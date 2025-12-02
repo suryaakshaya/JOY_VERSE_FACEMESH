@@ -130,10 +130,28 @@ pipeline ani annadu ani manam pipeline tho cheyalsina avasaram edhanta if use sc
 ilanti script tho cheyyali
 
 
+deploying a web app:
+create new -> pipeline->config GIT_HOME,JAVA_HOME,MAVEN_HOME, tomcat in git change chey
+
 
 checkout ([$class:'GITSCM',branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/suryaakshaya/mavenweb.git']]])
 
 
+Configuration of maven_java project:
+Click on "New Item" (left side menu) and name it as maven_java > select freestyle project > click on “OK”
+Give the description
+In the source code management select git and give the git repo link
+In the build steps click on add build step > give maven version as MAVEN_HOME > select invoke top-level maven targets > goals as clean
+ In the build steps click on add build step > give maven version as MAVEN_HOME > select invoke top-level maven targets > goals as install
+In the post build actions > click on add post build action > select the archive the artifacts > in the file to archive give “**/*”
+For the second post build action,
+In the post build actions > click on add post build action >select build other projects > give projects to build as MavenJava_Test 
+Click on apply and save
+If the build is success
+
+
+
+Free style : New freestyle,src code-none, build steps copy from another project : ex1, post build: archive artifacts:**/*
 webhook:
 create pipeline -> sample html->build->configure->pipeline->pipeline syntax->version control->git url->geberate pipeline script->save->webhook->payload url (ngrok http 8080/github-webhook)->test->commit
 checkout scmGit(branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/suryaakshaya/mavenweb.git']])
@@ -156,7 +174,7 @@ extended email notification -> smtp.gamil.com 465->cred (gmail, passkey generate
 
 
 tomcat:
-pipeline {
+ {
     agent any
 
     environment {
