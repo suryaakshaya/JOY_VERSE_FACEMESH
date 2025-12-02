@@ -1,3 +1,5 @@
+https://github.com/PruthvidharReddy01/EduAssess.git
+
 minikuibe commands:
 minikube start --driver=docker (if error -> minikube delete , start again)
 kubectl create deployment mynginx --image=nginx
