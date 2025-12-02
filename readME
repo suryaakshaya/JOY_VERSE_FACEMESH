@@ -150,10 +150,15 @@ checkout([
 
 
 email-trigger:
-jenkins->configure system->last lo smtp ->stmp.gmail.com(@gmail.com)->advanced:smtp (username:gmail,pass:key generated)->tls->smtpport(587)and enter reciepent email->test
+jenkins->configure system->last lo smtp ->stmp.gmail.com(@gmail.com)->advanced:smtp (username:gmail,pass:key generated"ehqr imut yxfy grhk")->tls->smtpport(587)and enter reciepent email->test
 extended email notification -> smtp.gamil.com 465->cred (gmail, passkey generated)->ssl
 
-
+•	Jenkins → Select a Job → Configure->ii. In the Post-build Actions section:
+•	Click: Add post-build action → Editable Email Notification
+A. Fill in the fields:
+Project Recipient List	Add recipient email addresses (comma-separated)
+Content Type	Default (text/plain) or text/html
+save build 
 
 
 tomcat:
