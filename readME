@@ -14,6 +14,7 @@ kubectl get deployment
 kubectl describe pod
 kubectl describe pod pod_name
 
+web hook-> new->freestyle->git repo->triggers(github hook trigger)->ngrok.exe http 8080 ->https://<your-ngrok-url>/github-webhook/ ->add webhook ->make some change in git->build will start automatically
 
 
 
