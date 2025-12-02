@@ -78,60 +78,42 @@ terminate and delete instance
 
 pipeline:
 pipeline ani annadu ani manam pipeline tho cheyalsina avasaram edhanta if use scripts ani mention chesthe pipeline {
+    pipeline {
     agent any
 
-    tools {
-        maven 'Maven'
-        jdk 'JDK21'
-    }
-
     stages {
-
-        stage('Clone Repository') {
+        stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/yourname/WebAppProject.git'
+                git url: 'https://github.com/suryaakshaya/labexternalprep.git', branch: 'main'
             }
         }
 
-        stage('Maven Build') {
+        stage('Build') {
             steps {
-                bat "mvn clean package"
+                echo 'Building the project...'
             }
         }
 
-        stage('Run Tests') {
+        stage('Test') {
             steps {
-                bat "mvn test"
+                echo 'Running tests...'
             }
         }
 
-        stage('List WAR File') {
+        stage('Deploy') {
             steps {
-                bat "dir target\\*.war"
+                echo 'Deploying the application...'
             }
-        }
-
-        stage('Deploy to Tomcat') {
-            steps {
-                echo "Deploying WAR to Tomcat..."
-                // example: copy file to tomcat webapps
-                bat 'copy target\\yourapp.war C:\\tomcat\\webapps\\'
-            }
-        }
-    }
-
-    post {
-        success {
-            echo "Deployment completed successfully!"
         }
     }
 }
+
 
 ilanti script tho cheyyali
 
 
 deploying a web app:
-create new -> pipeline->config GIT_HOME,JAVA_HOME,MAVEN_HOME, tomcat in git change chey
+create new -> pipeline->config GIT_HOME,JAVA_HOME,MAVEN_HOME, tomcat in git change chey, tomcat:repo name
 
 
 checkout ([$class:'GITSCM',branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/suryaakshaya/mavenweb.git']]])
@@ -335,3 +317,40 @@ volumes:
   db_data:
   wordpress_data:
 docker-compose up -d->localhost
+
+
+Maven-web-pipeline
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git url: 'https://github.com/your-repo', branch: 'main'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh 'mvn clean test'
+            }
+        }
+
+        stage('Test Report') {
+            steps {
+                junit '**/target/surefire-reports/*.xml'
+            }
+        }
+    }
+}
+
+
+pipeline view for maven web:
+
+build:
+new->freestyle->maven_web_build->In the source code management select git and give the git repo link->build steps(invoke) clean install,->post build (archive art) **/*,buiild other maven_web_test
+test:
+new->freestyle->maven_web_test->src code->none->env(del work)->build steps(copy art)maven_web_test,**/* , (invoke top level) test->post build(arc art) **/*, build other maven_Web_deploy
+deploy:
+new->freestyle->maven_web_deploy->src none->env del work->build step (copy art)maven_web_test**/*
+pipeline: new view ->maven_web_build(directly) ->save run 
