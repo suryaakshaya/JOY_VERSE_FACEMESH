@@ -272,6 +272,7 @@ run existing container: docker start myubuntu2 -> docker exec -it myubuntu2 bash
 mkdir image-creation->cd image-creation->notepad Dockerfile->rename Dockerfile.txt Dockerfile->
 FROM nginx
 COPY . /usr/share/nginx/html
+dir -> rename Dcokerfile.txt Dockerfile
 ->docker build -t mysite .->docker run -d -p 9090:80 mysite
 
 
@@ -324,7 +325,7 @@ services:
 volumes:
   db_data:
   wordpress_data:
-docker-compose up -d->localhost
+docker-compose up -d->localhost(if doesnt work change port and delete the container docker ps-a)
 
 
 Maven-web-pipeline
