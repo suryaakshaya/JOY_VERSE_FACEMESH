@@ -1,3 +1,4 @@
+
 https://github.com/PruthvidharReddy01/EduAssess.git
 
 minikuibe commands:
@@ -353,6 +354,42 @@ pipeline {
     }
 }
 
+flask app:
+mkdir falskapp->cd flaskapp->notepad app.py 
+from flask import Flask
+app=Flask(__name__)
+@app.route("/")
+def home():
+	return "Hello from 23bd1a6723"
+if __name__=="__main__":
+	app.run(host="0.0.0.0",port=5004)
+
+notepad docker-compose.yml
+version: "3.9"
+services:
+  web:
+    build: .
+    ports:
+      - "5004:5004"
+    depends_on:
+      - db
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: mydb
+    ports:
+      - "3306:3306"
+
+notepad Dockerfile
+FROM python:3.10-slim
+WORKDIR /app
+COPY app.py /app/
+RUN pip install flask
+CMD ["python","app.py"]
+
+docker compose up --build
 
 pipeline view for maven web:
 
