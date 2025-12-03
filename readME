@@ -265,7 +265,7 @@ nagios: docker run -d -p 8090:80 --name mynagios jasonrivers/nagios:latest (nagi
 
 
 creating image in docker:
-run existing container: docker start myubuntu2 -> docker exec -it myubuntu2 bash->docker commit ubuntu-commit-1 img-commit-1->docker images->docker run -it img-commit-1->docker tag img-commit-1 surya/img-commit-1->docker push surya/img-commit-1
+run existing container: docker start myubuntu2 -> docker exec -it myubuntu2 bash->docker commit ubuntu-commit-1 img-commit-1->docker images->docker run -it img-commit-1->docker tag img-commit-1 suryaakshaya19/img-commit-1->docker push suryaakshaya19/img-commit-1(if it doesnt work go to docker hub create a repo with name img-commit-1)
 
 
 
